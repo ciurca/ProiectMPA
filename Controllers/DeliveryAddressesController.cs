@@ -2,27 +2,34 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProiectMPA.Models;
 using ProiectMPA.Models.Data;
+using ProiectMPA.Models.DTOs;
+using ProiectMPA.Services;
 
 namespace ProiectMPA.Controllers
 {
     public class DeliveryAddressesController : Controller
     {
         private readonly ProiectMPADbContext _context;
-
-        public DeliveryAddressesController(ProiectMPADbContext context)
+        private readonly IUserService _userService;
+        public DeliveryAddressesController(ProiectMPADbContext context, IUserService userService)
         {
             _context = context;
+            _userService = userService;
         }
 
         // GET: DeliveryAddresses
         public async Task<IActionResult> Index()
         {
-            return View(await _context.DeliveryAddresses.ToListAsync());
+            var user = await _userService.GetCurrentUser();
+
+            return View(await _context.DeliveryAddresses.Where(d => d.UserId == user.Id).ToListAsync());
         }
 
         // GET: DeliveryAddresses/Details/5
@@ -33,9 +40,10 @@ namespace ProiectMPA.Controllers
                 return NotFound();
             }
 
-            var deliveryAddress = await _context.DeliveryAddresses
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (deliveryAddress == null)
+            var user = await _userService.GetCurrentUser();
+
+            var deliveryAddress = await _context.DeliveryAddresses.Include(d => d.User).Where(d => d.Id == id).FirstOrDefaultAsync();
+            if (deliveryAddress == null || deliveryAddress.User.Id != user.Id)
             {
                 return NotFound();
             }
@@ -54,27 +62,31 @@ namespace ProiectMPA.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UserId,Description,Address")] DeliveryAddress deliveryAddress)
+        public async Task<IActionResult> Create([Bind("Description,Address")] DeliveryAddressCreateDto input)
         {
             if (ModelState.IsValid)
             {
+                var user = await _userService.GetCurrentUser();
+                var deliveryAddress = new DeliveryAddress() { UserId = user.Id, Address = input.Address, Description = input.Description };
                 _context.Add(deliveryAddress);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(deliveryAddress);
+            return View(input);
         }
 
         // GET: DeliveryAddresses/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            var user = await _userService.GetCurrentUser();
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            var deliveryAddress = await _context.DeliveryAddresses.FindAsync(id);
-            if (deliveryAddress == null)
+            var deliveryAddress = await _context.DeliveryAddresses.Include(d => d.User).Where(d => d.Id == id).FirstOrDefaultAsync();
+            if (deliveryAddress == null || deliveryAddress.User.Id != user.Id)
             {
                 return NotFound();
             }
@@ -124,9 +136,9 @@ namespace ProiectMPA.Controllers
                 return NotFound();
             }
 
-            var deliveryAddress = await _context.DeliveryAddresses
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (deliveryAddress == null)
+            var user = await _userService.GetCurrentUser();
+            var deliveryAddress = await _context.DeliveryAddresses.Include(d => d.User).Where(d => d.Id == id).FirstOrDefaultAsync();
+            if (deliveryAddress == null || deliveryAddress.User.Id != user.Id)
             {
                 return NotFound();
             }

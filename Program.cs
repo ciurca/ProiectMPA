@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ProiectMPA.Models;
 using ProiectMPA.Models.Data;
 using ProiectMPA.Data;
+using ProiectMPA.Services;
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
@@ -11,6 +12,8 @@ builder.Services.AddDbContext<IdentityContext>(options => options.UseSqlServer(c
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddRoles<IdentityRole>().AddEntityFrameworkStores<IdentityContext>();
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IUserService, UserService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

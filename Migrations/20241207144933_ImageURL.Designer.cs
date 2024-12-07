@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProiectMPA.Models.Data;
 
@@ -11,9 +12,11 @@ using ProiectMPA.Models.Data;
 namespace ProiectMPA.Migrations
 {
     [DbContext(typeof(ProiectMPADbContext))]
-    partial class ProiectMPADbContextModelSnapshot : ModelSnapshot
+    [Migration("20241207144933_ImageURL")]
+    partial class ImageURL
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -93,26 +96,6 @@ namespace ProiectMPA.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Start your meal with a delicious appetizer.",
-                            Name = "Appetizers"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Hearty and satisfying main courses.",
-                            Name = "Main Courses"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "Sweet treats to end your meal.",
-                            Name = "Desserts"
-                        });
                 });
 
             modelBuilder.Entity("ProiectMPA.Models.DeliveryAddress", b =>
@@ -172,62 +155,6 @@ namespace ProiectMPA.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("MenuItems");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CategoryId = 1,
-                            Description = "Crispy rolls with a savory filling.",
-                            ImageURL = "https://www.vegrecipesofindia.com/wp-content/uploads/2015/10/spring-rolls-recipe.jpg",
-                            Name = "Spring Rolls",
-                            Price = 5.99m
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CategoryId = 1,
-                            Description = "Grilled bread with tomato and basil.",
-                            ImageURL = "https://www.thespruceeats.com/thmb/0SP-Ui3K2C2jL5OkUvIQopCqVHo=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/how-to-make-bruschetta-2020459-hero-01-15950eb2b852461abc9cfbbf536382dd.jpg",
-                            Name = "Bruschetta",
-                            Price = 6.99m
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CategoryId = 2,
-                            Description = "Juicy grilled chicken with herbs.",
-                            ImageURL = "https://www.thespruceeats.com/thmb/x7_ajSUFbjtLdfnIYCEl2Cplhfc=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/chickenmarsala-589de2165f9b58819c883593.jpg",
-                            Name = "Grilled Chicken",
-                            Price = 12.99m
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CategoryId = 2,
-                            Description = "Classic Italian pasta with creamy sauce.",
-                            ImageURL = "https://www.thespruceeats.com/thmb/sUSIS7lVuErRIJHonesrPRjhXQQ=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/pasta-carbonara-recipe-5210168-hero-01-80090e56abc04ca19d88ebf7fad1d157.jpg",
-                            Name = "Spaghetti Carbonara",
-                            Price = 10.99m
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CategoryId = 3,
-                            Description = "Rich and moist chocolate cake.",
-                            ImageURL = "https://www.thespruceeats.com/thmb/Y-wYwozMefSplJE_SNjFuQHVwOo=/425x300/filters:max_bytes(150000):strip_icc():format(webp)/chocolatelayercake-157558344-56c9e3113df78cfb37910f40.jpg",
-                            Name = "Chocolate Cake",
-                            Price = 6.99m
-                        },
-                        new
-                        {
-                            Id = 6,
-                            CategoryId = 3,
-                            Description = "Creamy cheesecake with a graham cracker crust.",
-                            ImageURL = "https://www.thespruceeats.com/thmb/gYQ1Y9rrhdv-Iul_QRPzQj_Bth4=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/cheesecake-1965daae33964b7e9507301678fd94f0.jpeg",
-                            Name = "Cheesecake",
-                            Price = 7.99m
-                        });
                 });
 
             modelBuilder.Entity("ProiectMPA.Models.Order", b =>

@@ -314,8 +314,7 @@ namespace ProiectMPA.Migrations
 
                     b.HasIndex("EmployeeId");
 
-                    b.HasIndex("OrderId")
-                        .IsUnique();
+                    b.HasIndex("OrderId");
 
                     b.ToTable("OrderStatuses");
                 });
@@ -389,8 +388,8 @@ namespace ProiectMPA.Migrations
                         .IsRequired();
 
                     b.HasOne("ProiectMPA.Models.Order", "Order")
-                        .WithOne("Status")
-                        .HasForeignKey("ProiectMPA.Models.OrderStatus", "OrderId")
+                        .WithMany("Statuses")
+                        .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -408,8 +407,7 @@ namespace ProiectMPA.Migrations
                 {
                     b.Navigation("OrderItems");
 
-                    b.Navigation("Status")
-                        .IsRequired();
+                    b.Navigation("Statuses");
                 });
 #pragma warning restore 612, 618
         }

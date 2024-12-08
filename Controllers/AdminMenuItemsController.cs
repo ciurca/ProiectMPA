@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using ProiectMPA.Models.Data;
 
 namespace ProiectMPA.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class AdminMenuItemsController : Controller
     {
         private readonly ProiectMPADbContext _context;
@@ -48,7 +50,7 @@ namespace ProiectMPA.Controllers
         // GET: AdminMenuItems/Create
         public IActionResult Create()
         {
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id");
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
             return View();
         }
 
@@ -82,7 +84,7 @@ namespace ProiectMPA.Controllers
             {
                 return NotFound();
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", menuItem.CategoryId);
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", menuItem.CategoryId);
             return View(menuItem);
         }
 

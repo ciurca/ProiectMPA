@@ -1,0 +1,11 @@
+﻿@model IEnumerable<ProiectMPA.Models.Order>
+@{
+    ViewData["Title"] = "Index";
+}
+<h1>Orders</h1>
+
+@foreach (var order in Model) 
+{
+    <p>@order.Id</p>
+    <p>@order.TotalPrice</p>
+}

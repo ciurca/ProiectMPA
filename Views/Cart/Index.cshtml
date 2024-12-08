@@ -1,4 +1,4 @@
-﻿@model List<OrderItem>
+﻿@model ProiectMPA.Models.CartViewModel
 
 @{
     ViewData["Title"] = "Cart";
@@ -17,9 +17,9 @@
         </tr>
     </thead>
     <tbody>
-        @if (Model != null && Model.Count > 0)
+        @if (Model.Cart != null && Model.Cart.Count > 0)
         {
-            foreach (var item in Model)
+            foreach (var item in Model.Cart)
             {
                 <tr>
                     <td>@item.MenuItem.Name</td>
@@ -43,3 +43,29 @@
 
 <a asp-action="ClearCart" class="btn btn-warning">Clear Cart</a>
 <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Continue Shopping</a>
+
+@if (Model.Cart != null && Model.Cart.Count > 0)
+{
+    @if(Model.DeliveryAddresses.Count == 0) 
+    {
+        <p class="text-danger">Delivery address missing, <a asp-controller="DeliveryAddresses" asp-action="Create">add</a> one before placing the order.</p>
+    } 
+    else 
+    {
+        <form asp-action="CreateOrder" method="post">
+            <div class="form-group">
+                @for (int i = 0; i < Model.Cart.Count; i++)
+                {
+                    <input type="hidden" name="orderItems[@i].MenuItemId" value="@Model.Cart[i].MenuItemId" />
+                    <input type="hidden" name="orderItems[@i].Quantity" value="@Model.Cart[i].Quantity" />
+                }
+                <label class="control-label">Address</label>
+                <select name="deliveryAddressId" class="form-control" asp-items="ViewBag.DeliveryAddressId"></select>
+                <span asp-validation-for="DeliveryAddressId" class="text-danger"></span>
+                <label for="specialMentions" class="form-label">Special Mentions</label>
+                <textarea name="specialMentions" class="form-control" id="specialMentions" rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn btn-success">Place Order</button>
+        </form>
+    }
+}

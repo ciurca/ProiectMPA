@@ -8,8 +8,8 @@ namespace ProiectMPA.Models
         public int Id { get; set; }
         public string UserId { get; set; }
         public IdentityUser? User { get; set; }
-        public int DeliveryAddress {  get; set; }
-        public DeliveryAddress Address { get; set; }
+        public int DeliveryAddressId {  get; set; }
+        public DeliveryAddress? DeliveryAddress { get; set; }
         public string? SpecialMentions { get; set; }
         public DateTime CreatedAt {  get; set; }
         public decimal TotalPrice { get; set; }

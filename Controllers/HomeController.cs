@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +28,7 @@ namespace ProiectMPA.Controllers
             return View(await proiectMPADbContext.ToListAsync());
         }
 
+        [Authorize(Roles = "User")]
         public IActionResult AddToCart(int menuItemId)
         {
             var cart = HttpContext.Session.GetObjectFromJson<List<OrderItem>>(CartSessionKey) ?? new List<OrderItem>();

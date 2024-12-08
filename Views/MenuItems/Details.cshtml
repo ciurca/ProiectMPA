@@ -9,13 +9,10 @@
 <div>
     <h4>@Html.DisplayFor(model => model.Name)</h4>
     <hr />
+    <dd class = "col-sm-10">
+        <img class="card-img-top" style="object-fit: cover; height: 300px;" src="@Html.DisplayFor(model => model.ImageURL)" />
+    </dd>
     <dl class="row">
-        <dt class = "col-sm-2">
-            Image
-        </dt>
-        <dd class = "col-sm-10">
-            <img class="img-thumbnail" src="@Html.DisplayFor(model => model.ImageURL)" />
-        </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Description)
         </dt>
@@ -36,7 +33,10 @@
         </dd>
     </dl>
 </div>
+@if(User.IsInRole("Admin"))
+{
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+}

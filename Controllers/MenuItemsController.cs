@@ -12,22 +12,24 @@ using ProiectMPA.Models.Data;
 namespace ProiectMPA.Controllers
 {
     [Authorize(Roles = "Admin")]
-    public class AdminCategoriesController : Controller
+    public class MenuItemsController : Controller
     {
         private readonly ProiectMPADbContext _context;
 
-        public AdminCategoriesController(ProiectMPADbContext context)
+        public MenuItemsController(ProiectMPADbContext context)
         {
             _context = context;
         }
 
-        // GET: AdminCategories
+        // GET: AdminMenuItems
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Categories.ToListAsync());
+            var proiectMPADbContext = _context.MenuItems.Include(m => m.Category);
+            return View(await proiectMPADbContext.ToListAsync());
         }
 
-        // GET: AdminCategories/Details/5
+        // GET: AdminMenuItems/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -35,39 +37,42 @@ namespace ProiectMPA.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories
+            var menuItem = await _context.MenuItems
+                .Include(m => m.Category)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (category == null)
+            if (menuItem == null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            return View(menuItem);
         }
 
-        // GET: AdminCategories/Create
+        // GET: AdminMenuItems/Create
         public IActionResult Create()
         {
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
             return View();
         }
 
-        // POST: AdminCategories/Create
+        // POST: AdminMenuItems/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description")] Category category)
+        public async Task<IActionResult> Create([Bind("Id,Name,ImageURL,Description,Price,CategoryId")] MenuItem menuItem)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(category);
+                _context.Add(menuItem);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", menuItem.CategoryId);
+            return View(menuItem);
         }
 
-        // GET: AdminCategories/Edit/5
+        // GET: AdminMenuItems/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -75,22 +80,23 @@ namespace ProiectMPA.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories.FindAsync(id);
-            if (category == null)
+            var menuItem = await _context.MenuItems.FindAsync(id);
+            if (menuItem == null)
             {
                 return NotFound();
             }
-            return View(category);
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", menuItem.CategoryId);
+            return View(menuItem);
         }
 
-        // POST: AdminCategories/Edit/5
+        // POST: AdminMenuItems/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description")] Category category)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,ImageURL,Description,Price,CategoryId")] MenuItem menuItem)
         {
-            if (id != category.Id)
+            if (id != menuItem.Id)
             {
                 return NotFound();
             }
@@ -99,12 +105,12 @@ namespace ProiectMPA.Controllers
             {
                 try
                 {
-                    _context.Update(category);
+                    _context.Update(menuItem);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CategoryExists(category.Id))
+                    if (!MenuItemExists(menuItem.Id))
                     {
                         return NotFound();
                     }
@@ -115,10 +121,11 @@ namespace ProiectMPA.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", menuItem.CategoryId);
+            return View(menuItem);
         }
 
-        // GET: AdminCategories/Delete/5
+        // GET: AdminMenuItems/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -126,34 +133,35 @@ namespace ProiectMPA.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories
+            var menuItem = await _context.MenuItems
+                .Include(m => m.Category)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (category == null)
+            if (menuItem == null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            return View(menuItem);
         }
 
-        // POST: AdminCategories/Delete/5
+        // POST: AdminMenuItems/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
-            if (category != null)
+            var menuItem = await _context.MenuItems.FindAsync(id);
+            if (menuItem != null)
             {
-                _context.Categories.Remove(category);
+                _context.MenuItems.Remove(menuItem);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CategoryExists(int id)
+        private bool MenuItemExists(int id)
         {
-            return _context.Categories.Any(e => e.Id == id);
+            return _context.MenuItems.Any(e => e.Id == id);
         }
     }
 }

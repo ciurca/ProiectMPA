@@ -4,6 +4,13 @@
 }
 
 <h1 class="mb-4">Menu</h1>
+@if(TempData["SuccessMessage"] != null) {
+    var message = TempData["SuccessMessage"];
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+		@message
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
 <ul class="nav nav-tabs">
     @foreach(var category in Model)
     {
@@ -36,9 +43,9 @@
 								</span>
                                 @if(User.Identity.IsAuthenticated && User.IsInRole("User")) 
                                 {
-                                <button class="btn btn-primary rounded">
+                                <a asp-action="AddToCart" asp-route-menuItemId="@menuItem.Id" class="btn btn-primary rounded">
                                     Add
-                                </button>
+                                </a>
                                 }
 
                             </div>

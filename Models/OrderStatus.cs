@@ -11,7 +11,7 @@ namespace ProiectMPA.Models
         public OrderStatusEnum Status { get; set; }
         public DateTime Timestamp { get; set; }
         public string EmployeeId { get; set; }
-        public IdentityUser?Employee { get; set; }
+        public IdentityUser? Employee { get; set; }
 
     }
 }

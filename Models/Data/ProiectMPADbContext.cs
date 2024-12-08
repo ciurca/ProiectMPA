@@ -33,9 +33,9 @@ namespace ProiectMPA.Models.Data
             );
 
             modelBuilder.Entity<Order>()
-            .HasOne(o => o.Address) 
+            .HasOne(o => o.DeliveryAddress) 
             .WithMany()
-            .HasForeignKey(o => o.DeliveryAddress) 
+            .HasForeignKey(o => o.DeliveryAddressId) 
             .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<OrderStatus>()

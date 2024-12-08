@@ -93,6 +93,26 @@ namespace ProiectMPA.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Start your meal with a delicious appetizer.",
+                            Name = "Appetizers"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Hearty and satisfying main courses.",
+                            Name = "Main Courses"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Sweet treats to end your meal.",
+                            Name = "Desserts"
+                        });
                 });
 
             modelBuilder.Entity("ProiectMPA.Models.DeliveryAddress", b =>
@@ -136,6 +156,10 @@ namespace ProiectMPA.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ImageURL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -148,6 +172,62 @@ namespace ProiectMPA.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("MenuItems");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CategoryId = 1,
+                            Description = "Crispy rolls with a savory filling.",
+                            ImageURL = "https://www.vegrecipesofindia.com/wp-content/uploads/2015/10/spring-rolls-recipe.jpg",
+                            Name = "Spring Rolls",
+                            Price = 5.99m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CategoryId = 1,
+                            Description = "Grilled bread with tomato and basil.",
+                            ImageURL = "https://www.thespruceeats.com/thmb/0SP-Ui3K2C2jL5OkUvIQopCqVHo=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/how-to-make-bruschetta-2020459-hero-01-15950eb2b852461abc9cfbbf536382dd.jpg",
+                            Name = "Bruschetta",
+                            Price = 6.99m
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CategoryId = 2,
+                            Description = "Juicy grilled chicken with herbs.",
+                            ImageURL = "https://www.thespruceeats.com/thmb/x7_ajSUFbjtLdfnIYCEl2Cplhfc=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/chickenmarsala-589de2165f9b58819c883593.jpg",
+                            Name = "Grilled Chicken",
+                            Price = 12.99m
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CategoryId = 2,
+                            Description = "Classic Italian pasta with creamy sauce.",
+                            ImageURL = "https://www.thespruceeats.com/thmb/sUSIS7lVuErRIJHonesrPRjhXQQ=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/pasta-carbonara-recipe-5210168-hero-01-80090e56abc04ca19d88ebf7fad1d157.jpg",
+                            Name = "Spaghetti Carbonara",
+                            Price = 10.99m
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CategoryId = 3,
+                            Description = "Rich and moist chocolate cake.",
+                            ImageURL = "https://www.thespruceeats.com/thmb/Y-wYwozMefSplJE_SNjFuQHVwOo=/425x300/filters:max_bytes(150000):strip_icc():format(webp)/chocolatelayercake-157558344-56c9e3113df78cfb37910f40.jpg",
+                            Name = "Chocolate Cake",
+                            Price = 6.99m
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CategoryId = 3,
+                            Description = "Creamy cheesecake with a graham cracker crust.",
+                            ImageURL = "https://www.thespruceeats.com/thmb/gYQ1Y9rrhdv-Iul_QRPzQj_Bth4=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/cheesecake-1965daae33964b7e9507301678fd94f0.jpeg",
+                            Name = "Cheesecake",
+                            Price = 7.99m
+                        });
                 });
 
             modelBuilder.Entity("ProiectMPA.Models.Order", b =>
@@ -234,8 +314,7 @@ namespace ProiectMPA.Migrations
 
                     b.HasIndex("EmployeeId");
 
-                    b.HasIndex("OrderId")
-                        .IsUnique();
+                    b.HasIndex("OrderId");
 
                     b.ToTable("OrderStatuses");
                 });
@@ -254,7 +333,7 @@ namespace ProiectMPA.Migrations
             modelBuilder.Entity("ProiectMPA.Models.MenuItem", b =>
                 {
                     b.HasOne("ProiectMPA.Models.Category", "Category")
-                        .WithMany()
+                        .WithMany("MenuItems")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -309,8 +388,8 @@ namespace ProiectMPA.Migrations
                         .IsRequired();
 
                     b.HasOne("ProiectMPA.Models.Order", "Order")
-                        .WithOne("Status")
-                        .HasForeignKey("ProiectMPA.Models.OrderStatus", "OrderId")
+                        .WithMany("Statuses")
+                        .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -319,12 +398,16 @@ namespace ProiectMPA.Migrations
                     b.Navigation("Order");
                 });
 
+            modelBuilder.Entity("ProiectMPA.Models.Category", b =>
+                {
+                    b.Navigation("MenuItems");
+                });
+
             modelBuilder.Entity("ProiectMPA.Models.Order", b =>
                 {
                     b.Navigation("OrderItems");
 
-                    b.Navigation("Status")
-                        .IsRequired();
+                    b.Navigation("Statuses");
                 });
 #pragma warning restore 612, 618
         }

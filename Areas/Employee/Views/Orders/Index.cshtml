@@ -1,0 +1,56 @@
+﻿@model IEnumerable<ProiectMPA.Models.Order>
+@{
+    ViewData["Title"] = "Orders";
+}
+
+<h1>Orders</h1>
+
+<div class="container">
+    <div class="row">
+        @foreach (var order in Model)
+        {
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title">Order #@order.Id</h5>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">Status: @order.Status</h6>
+                        <p class="card-text">Total Price: @order.TotalPrice.ToString("C")</p>
+                        <p class="card-text">Special Mentions: @order.SpecialMentions</p>
+                        <p class="card-text">Created At: @order.CreatedAt.ToString("g")</p>
+                        <h6>Order Items:</h6>
+                        <ul class="list-group list-group-flush">
+                            @foreach (var item in order.OrderItems)
+                            {
+                                <li class="list-group-item">
+                                    <div class="d-flex align-items-center">
+                                        <img src="@item.MenuItem?.ImageURL" alt="@item.MenuItem?.Name" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
+                                        <div>
+                                            <strong>@item.MenuItem?.Name</strong> - Quantity: @item.Quantity
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                        <h6>Latest Status:</h6>
+                        @if (order.Statuses != null && order.Statuses.Any())
+                        {
+                            var latestStatus = order.Statuses.OrderByDescending(s => s.Timestamp).First();
+                            <p class="card-text">Status: @latestStatus.Status</p>
+                            <p class="card-text">Updated By: @latestStatus.User?.UserName</p>
+                            <p class="card-text">Timestamp: @latestStatus.Timestamp.ToString("g")</p>
+                        }
+                        else
+                        {
+                            <p class="card-text">No status updates yet.</p>
+                        }
+                    </div>
+                    <div class="card-footer text-end">
+                        <a href="@Url.Action("Edit", "Orders", new { id = order.Id })" class="btn btn-primary">Edit</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

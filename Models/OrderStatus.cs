@@ -10,8 +10,8 @@ namespace ProiectMPA.Models
         public Order? Order { get; set; }
         public OrderStatusEnum Status { get; set; }
         public DateTime Timestamp { get; set; }
-        public string EmployeeId { get; set; }
-        public IdentityUser? Employee { get; set; }
+        public string UserId { get; set; }
+        public IdentityUser? User { get; set; }
 
     }
 }

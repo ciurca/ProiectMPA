@@ -1,0 +1,54 @@
+﻿@model ProiectMPA.Models.Order
+@using ProiectMPA.Models.Enums
+@{
+    ViewData["Title"] = "Edit Order";
+}
+
+<h1>Edit Order</h1>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title">Order #@Model.Id</h5>
+    </div>
+    <div class="card-body">
+        <form asp-action="Edit">
+            <div class="mb-3">
+                <label asp-for="Status" class="form-label"></label>
+                <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<OrderStatusEnum>()"></select>
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+            <input type="hidden" asp-for="Id" />
+            <div class="d-flex justify-content-between">
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h5 class="card-title">Order Details</h5>
+    </div>
+    <div class="card-body">
+        <p class="card-text">Total Price: @Model.TotalPrice.ToString("C")</p>
+        @if(Model.SpecialMentions != null) {
+        <p class="card-text">Special Mentions: @Model.SpecialMentions</p>
+        }
+        <p class="card-text">Created At: @Model.CreatedAt.ToString("g")</p>
+        <h6>Order Items:</h6>
+        <ul class="list-group list-group-flush">
+            @foreach (var item in Model.OrderItems)
+            {
+                <li class="list-group-item">
+                    <div class="d-flex align-items-center">
+                        <img src="@item.MenuItem?.ImageURL" alt="@item.MenuItem?.Name" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
+                        <div>
+                            <strong>@item.MenuItem?.Name</strong> - Quantity: @item.Quantity
+                        </div>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+</div>

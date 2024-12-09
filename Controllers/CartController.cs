@@ -27,7 +27,6 @@ namespace ProiectMPA.Controllers
             var userAddresses = await _context.DeliveryAddresses.Where(d => d.User == user).ToListAsync();
             var cart = HttpContext.Session.GetObjectFromJson<List<OrderItem>>(CartSessionKey) ?? new List<OrderItem>();
 
-            // Load MenuItem data for each OrderItem in the cart
             foreach (var item in cart)
             {
                 item.MenuItem = await _context.MenuItems.FindAsync(item.MenuItemId);
@@ -57,7 +56,6 @@ namespace ProiectMPA.Controllers
                 return View("Index", new CartViewModel { Cart = orderItems, DeliveryAddresses = userAddresses });
             }
 
-            // Load MenuItem data for each OrderItem in the cart
             foreach (var item in orderItems)
             {
                 item.MenuItem = await _context.MenuItems.FindAsync(item.MenuItemId);

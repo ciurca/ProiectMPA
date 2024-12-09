@@ -1,0 +1,37 @@
+﻿@model ProiectMPA.Models.Order
+@{
+    ViewData["Title"] = "Order Details";
+}
+
+<h1>Order Details</h1>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title">Order #@Model.Id</h5>
+    </div>
+    <div class="card-body">
+        <h6 class="card-subtitle mb-2 text-muted">Status: @Model.Status</h6>
+        <p class="card-text">Total Price: @Model.TotalPrice.ToString("C")</p>
+        @if(Model.SpecialMentions != null) {
+        <p class="card-text">Special Mentions: @Model.SpecialMentions</p>
+        }
+        <p class="card-text">Created At: @Model.CreatedAt.ToString("g")</p>
+        <h6>Order Items:</h6>
+        <ul class="list-group list-group-flush">
+            @foreach (var item in Model.OrderItems)
+            {
+                <li class="list-group-item">
+                    <div class="d-flex align-items-center">
+                        <img src="@item.MenuItem?.ImageURL" alt="@item.MenuItem?.Name" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
+                        <div>
+                            <strong>@item.MenuItem?.Name</strong> - Quantity: @item.Quantity
+                        </div>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+    <div class="card-footer text-end">
+        <a href="@Url.Action("Index", "Orders")" class="btn btn-primary">Back to Orders</a>
+    </div>
+</div>

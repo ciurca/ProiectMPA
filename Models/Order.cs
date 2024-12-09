@@ -13,6 +13,7 @@ namespace ProiectMPA.Models
         public string? SpecialMentions { get; set; }
         public DateTime CreatedAt {  get; set; }
         public decimal TotalPrice { get; set; }
+        public OrderStatusEnum Status { get; set; } = OrderStatusEnum.PENDING;
         public ICollection<OrderStatus>? Statuses { get; set; }
 
         public ICollection<OrderItem>? OrderItems { get; set; }

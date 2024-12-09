@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProiectMPA.Models.Data;
 
@@ -11,9 +12,11 @@ using ProiectMPA.Models.Data;
 namespace ProiectMPA.Migrations
 {
     [DbContext(typeof(ProiectMPADbContext))]
-    partial class ProiectMPADbContextModelSnapshot : ModelSnapshot
+    [Migration("20241208202620_DeliveryAddress")]
+    partial class DeliveryAddress
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -246,9 +249,6 @@ namespace ProiectMPA.Migrations
 
                     b.Property<string>("SpecialMentions")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
 
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2)");

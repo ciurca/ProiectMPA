@@ -1,11 +1,39 @@
 ﻿@model IEnumerable<ProiectMPA.Models.Order>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Orders";
 }
-<h1>Orders</h1>
 
-@foreach (var order in Model) 
-{
-    <p>@order.Id</p>
-    <p>@order.TotalPrice</p>
-}
+<h1>Orders</h1>
+<hr />
+
+<div class="container">
+    <div class="row">
+        @foreach (var order in Model)
+        {
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title">Order #@order.Id</h5>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">Status: @order.Status</h6>
+                        <p class="card-text">Total Price: @order.TotalPrice.ToString("C")</p>
+                        <p class="card-text">Created At: @order.CreatedAt.ToString("g")</p>
+                        <h6>Order Items:</h6>
+                        <ul class="list-group list-group-flush">
+                            @foreach (var item in order.OrderItems)
+                            {
+                                <li class="list-group-item">
+                                    @item.MenuItem?.Name - Quantity: @item.Quantity
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="card-footer text-end">
+                        <a href="@Url.Action("Details", "Orders", new { id = order.Id })" class="btn btn-primary">Details</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

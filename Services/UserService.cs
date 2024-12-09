@@ -5,19 +5,18 @@ namespace ProiectMPA.Services
     public class UserService : IUserService
     {
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly HttpContext _context;
-        public UserService(UserManager<IdentityUser> userManager, IHttpContextAccessor httpContext)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public UserService(UserManager<IdentityUser> userManager, IHttpContextAccessor httpContextAccessor)
         {
             _userManager = userManager;
-            _context = httpContext.HttpContext;
+            _httpContextAccessor = httpContextAccessor;
         }
+
         public async Task<IdentityUser> GetCurrentUser()
         {
-            if (_context.User.Identity.IsAuthenticated)
-            {
-            return await _userManager.GetUserAsync(_context.User);
-            }
-            return null;
+            var userId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+            return await _userManager.FindByIdAsync(userId);
         }
     }
 }

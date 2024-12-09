@@ -39,9 +39,9 @@ namespace ProiectMPA.Models.Data
             .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<OrderStatus>()
-                .HasOne(os => os.Employee)
+                .HasOne(os => os.User)
                 .WithMany()
-                .HasForeignKey(os => os.EmployeeId)
+                .HasForeignKey(os => os.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
         }
 

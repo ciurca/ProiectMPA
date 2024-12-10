@@ -4,12 +4,9 @@
     {
         PENDING = 0,
         ACCEPTED = 1,
-        REJECTED = 2,
-        PREPARING = 3,
-        READY_FOR_PICKUP = 4,
-        OUT_FOR_DELIVERY = 5,
-        DELIVERED = 6,
-        COMPLETED = 7,
-        CANCELED = 8,
+        PREPARING = 2,
+        READY_FOR_PICKUP = 3,
+        OUT_FOR_DELIVERY = 4,
+        DELIVERED = 5,
     }
 }

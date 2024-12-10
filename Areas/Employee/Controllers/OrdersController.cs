@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using ProiectMPA.Hubs;
 using ProiectMPA.Models;
 using ProiectMPA.Models.Data;
 using ProiectMPA.Models.Enums;
@@ -14,11 +16,13 @@ namespace ProiectMPA.Areas.Employee.Controllers
     {
         private readonly ProiectMPADbContext _context;
         private readonly IUserService _userService;
+        private readonly IHubContext<OrderHub> _hubContext;
 
-        public OrdersController(ProiectMPADbContext context, IUserService userService)
+        public OrdersController(ProiectMPADbContext context, IUserService userService, IHubContext<OrderHub> hubContext)
         {
             _context = context;
             _userService = userService;
+            _hubContext = hubContext;
         }
 
         public async Task<IActionResult> Index()
@@ -28,6 +32,7 @@ namespace ProiectMPA.Areas.Employee.Controllers
                 .ThenInclude(oi => oi.MenuItem)
                 .Include(o => o.Statuses)
                 .ThenInclude(s => s.User)
+                .Include(o => o.DeliveryAddress)
                 .OrderByDescending(o => o.CreatedAt)
                 .ToListAsync();
             return View(orders);
@@ -43,6 +48,7 @@ namespace ProiectMPA.Areas.Employee.Controllers
             var order = await _context.Orders
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.MenuItem)
+                .Include(o => o.DeliveryAddress)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (order == null)
@@ -60,6 +66,7 @@ namespace ProiectMPA.Areas.Employee.Controllers
             var existingOrder = await _context.Orders
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.MenuItem)
+                .Include(o => o.DeliveryAddress)
                 .FirstOrDefaultAsync(o => o.Id == id);
 
             if (existingOrder == null)
@@ -92,6 +99,8 @@ namespace ProiectMPA.Areas.Employee.Controllers
                     existingOrder.Status = status;
                     _context.Update(existingOrder);
                     await _context.SaveChangesAsync();
+
+                    await _hubContext.Clients.Group(existingOrder.UserId).SendAsync("ReceiveOrderStatusChange", existingOrder.Id, status.ToString());
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -109,7 +118,7 @@ namespace ProiectMPA.Areas.Employee.Controllers
                     ModelState.AddModelError(string.Empty, "An error occurred while saving changes. Please try again.");
                     Console.WriteLine(ex.InnerException?.Message);
                 }
-                return RedirectToAction(nameof(Index));
+                return View(existingOrder);
             }
 
             return View(existingOrder);

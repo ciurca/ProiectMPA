@@ -1,6 +1,17 @@
 ﻿@model ProiectMPA.Models.Order
+@using ProiectMPA.Models.Enums
 @{
     ViewData["Title"] = "Order Details";
+    var statuses = new List<OrderStatusEnum> {
+        OrderStatusEnum.ACCEPTED,
+        OrderStatusEnum.PREPARING,
+        OrderStatusEnum.READY_FOR_PICKUP,
+        OrderStatusEnum.OUT_FOR_DELIVERY,
+        OrderStatusEnum.DELIVERED
+    };
+    var totalStatuses = statuses.Count;
+    var currentStatusIndex = statuses.IndexOf(Model.Status);
+    var progressPercentage = (currentStatusIndex + 1) * 100 / totalStatuses;
 }
 
 <h1>Order Details</h1>
@@ -10,7 +21,12 @@
         <h5 class="card-title">Order #@Model.Id</h5>
     </div>
     <div class="card-body">
-        <h6 class="card-subtitle mb-2 text-muted">Status: @Model.Status</h6>
+        <h6 class="card-subtitle mb-2 text-muted">Status: <span id="orderStatus">@Model.Status</span></h6>
+        <div class="progress mb-3">
+            <div id="orderProgressBar" class="progress-bar bg-success" role="progressbar" style="width: @progressPercentage%" aria-valuenow="@progressPercentage" aria-valuemin="0" aria-valuemax="100">
+                @Model.Status
+            </div>
+        </div>
         <p class="card-text">Total Price: @Model.TotalPrice.ToString("C")</p>
         @if(Model.SpecialMentions != null) {
         <p class="card-text">Special Mentions: @Model.SpecialMentions</p>
@@ -35,3 +51,44 @@
         <a href="@Url.Action("Index", "Orders")" class="btn btn-primary">Back to Orders</a>
     </div>
 </div>
+
+@section Scripts {
+    <script type="module" src="~/js/signalr/dist/browser/signalr.min.js"></script>
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/orderHub")
+                .build();
+
+            connection.on("ReceiveOrderStatusChange", function (orderId, status) {
+                if (orderId === @Model.Id) {
+                    document.getElementById("orderStatus").innerText = status;
+
+                    const statuses = ["ACCEPTED", "PREPARING", "READY_FOR_PICKUP", "OUT_FOR_DELIVERY", "DELIVERED"];
+                    const totalStatuses = statuses.length;
+                    const currentStatusIndex = statuses.indexOf(status);
+                    const progressPercentage = (currentStatusIndex + 1) * 100 / totalStatuses;
+
+                    const progressBar = document.getElementById("orderProgressBar");
+                    progressBar.style.width = progressPercentage + '%';
+                    progressBar.setAttribute('aria-valuenow', progressPercentage);
+                    progressBar.innerText = status;
+                }
+            });
+
+            connection.start().then(function () {
+                connection.invoke("JoinGroup", "@Model.UserId").catch(function (err) {
+                    return console.error(err.toString());
+                });
+            }).catch(function (err) {
+                return console.error(err.toString());
+            });
+
+            window.addEventListener("beforeunload", function () {
+                connection.invoke("LeaveGroup", "@Model.UserId").catch(function (err) {
+                    return console.error(err.toString());
+                });
+            });
+        });
+    </script>
+}

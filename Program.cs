@@ -4,6 +4,7 @@ using ProiectMPA.Models;
 using ProiectMPA.Models.Data;
 using ProiectMPA.Data;
 using ProiectMPA.Services;
+using ProiectMPA.Hubs;
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
@@ -25,6 +26,8 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;               
     options.Cookie.IsEssential = true;           
 });
+
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -62,5 +65,7 @@ app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapHub<OrderHub>("/orderHub");
 
 app.Run();

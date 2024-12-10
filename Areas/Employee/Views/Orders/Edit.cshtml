@@ -32,10 +32,9 @@
     </div>
     <div class="card-body">
         <p class="card-text">Total Price: @Model.TotalPrice.ToString("C")</p>
-        @if(Model.SpecialMentions != null) {
-        <p class="card-text">Special Mentions: @Model.SpecialMentions</p>
-        }
-        <p class="card-text">Created At: @Model.CreatedAt.ToString("g")</p>
+		<p class="card-text">Special Mentions: @Model.SpecialMentions</p>
+        <p class="card-text">Placed at: @Model.CreatedAt.ToString("g")</p>
+		<p class="card-text">Delivery Address: @Model.DeliveryAddress.Address</p>
         <h6>Order Items:</h6>
         <ul class="list-group list-group-flush">
             @foreach (var item in Model.OrderItems)

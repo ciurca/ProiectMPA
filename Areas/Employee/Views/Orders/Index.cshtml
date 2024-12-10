@@ -17,8 +17,8 @@
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-muted">Status: @order.Status</h6>
                         <p class="card-text">Total Price: @order.TotalPrice.ToString("C")</p>
-                        <p class="card-text">Special Mentions: @order.SpecialMentions</p>
-                        <p class="card-text">Created At: @order.CreatedAt.ToString("g")</p>
+                        <p class="card-text">Placed at: @order.CreatedAt.ToString("g")</p>
+                        <p class="card-text">Delivery Address: @order.DeliveryAddress.Address</p>
                         <h6>Order Items:</h6>
                         <ul class="list-group list-group-flush">
                             @foreach (var item in order.OrderItems)

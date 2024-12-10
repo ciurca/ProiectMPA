@@ -11,7 +11,7 @@ using ProiectMPA.Services;
 namespace ProiectMPA.Areas.Employee.Controllers
 {
     [Area("Employee")]
-    [Authorize(Roles = "Employee, Admin")]
+    [Authorize(Policy = "OrderManager")]
     public class OrdersController : Controller
     {
         private readonly ProiectMPADbContext _context;

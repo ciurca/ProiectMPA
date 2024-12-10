@@ -24,7 +24,7 @@ namespace ProiectMPA.Controllers
         public async Task<IActionResult> Index()
         {
             var user = await _userService.GetCurrentUser();
-            var userAddresses = await _context.DeliveryAddresses.Where(d => d.User == user).ToListAsync();
+            var userAddresses = await _context.DeliveryAddresses.Where(d => d.UserId == user.Id).ToListAsync();
             var cart = HttpContext.Session.GetObjectFromJson<List<OrderItem>>(CartSessionKey) ?? new List<OrderItem>();
 
             foreach (var item in cart)

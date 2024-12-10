@@ -3,20 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProiectMPA.Models.Data;
 
 #nullable disable
 
-namespace ProiectMPA.Migrations
+namespace ProiectMPA.Migrations.ProiectMPADb
 {
     [DbContext(typeof(ProiectMPADbContext))]
-    [Migration("20241208064714_NullableItems")]
-    partial class NullableItems
+    partial class ProiectMPADbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -74,7 +71,7 @@ namespace ProiectMPA.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("IdentityUser");
+                    b.ToTable("AspNetUsers", (string)null);
                 });
 
             modelBuilder.Entity("ProiectMPA.Models.Category", b =>
@@ -244,11 +241,14 @@ namespace ProiectMPA.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DeliveryAddress")
+                    b.Property<int>("DeliveryAddressId")
                         .HasColumnType("int");
 
                     b.Property<string>("SpecialMentions")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
@@ -259,7 +259,7 @@ namespace ProiectMPA.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DeliveryAddress");
+                    b.HasIndex("DeliveryAddressId");
 
                     b.HasIndex("UserId");
 
@@ -300,10 +300,6 @@ namespace ProiectMPA.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("EmployeeId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
@@ -313,11 +309,15 @@ namespace ProiectMPA.Migrations
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeeId");
-
                     b.HasIndex("OrderId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("OrderStatuses");
                 });
@@ -346,9 +346,9 @@ namespace ProiectMPA.Migrations
 
             modelBuilder.Entity("ProiectMPA.Models.Order", b =>
                 {
-                    b.HasOne("ProiectMPA.Models.DeliveryAddress", "Address")
+                    b.HasOne("ProiectMPA.Models.DeliveryAddress", "DeliveryAddress")
                         .WithMany()
-                        .HasForeignKey("DeliveryAddress")
+                        .HasForeignKey("DeliveryAddressId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -358,7 +358,7 @@ namespace ProiectMPA.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Address");
+                    b.Navigation("DeliveryAddress");
 
                     b.Navigation("User");
                 });
@@ -384,21 +384,21 @@ namespace ProiectMPA.Migrations
 
             modelBuilder.Entity("ProiectMPA.Models.OrderStatus", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Employee")
-                        .WithMany()
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("ProiectMPA.Models.Order", "Order")
                         .WithMany("Statuses")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Employee");
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.Navigation("Order");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ProiectMPA.Models.Category", b =>

@@ -9,11 +9,11 @@ using ProiectMPA.Models.Data;
 
 #nullable disable
 
-namespace ProiectMPA.Migrations
+namespace ProiectMPA.Migrations.ProiectMPADb
 {
     [DbContext(typeof(ProiectMPADbContext))]
-    [Migration("20241209180555_OrderStatusUser")]
-    partial class OrderStatusUser
+    [Migration("20241210190425_InitModels")]
+    partial class InitModels
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -74,7 +74,7 @@ namespace ProiectMPA.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("IdentityUser");
+                    b.ToTable("AspNetUsers", (string)null);
                 });
 
             modelBuilder.Entity("ProiectMPA.Models.Category", b =>

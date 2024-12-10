@@ -88,7 +88,7 @@ namespace ProiectMPA.Controllers
             }
 
             var deliveryAddress = await _context.DeliveryAddresses.Include(d => d.User).Where(d => d.Id == id).FirstOrDefaultAsync();
-            if (deliveryAddress == null || deliveryAddress.User.Id != user.Id)
+            if (deliveryAddress == null || deliveryAddress.UserId != user.Id)
             {
                 return NotFound();
             }
@@ -140,7 +140,7 @@ namespace ProiectMPA.Controllers
 
             var user = await _userService.GetCurrentUser();
             var deliveryAddress = await _context.DeliveryAddresses.Include(d => d.User).Where(d => d.Id == id).FirstOrDefaultAsync();
-            if (deliveryAddress == null || deliveryAddress.User.Id != user.Id)
+            if (deliveryAddress == null || deliveryAddress.UserId != user.Id)
             {
                 return NotFound();
             }

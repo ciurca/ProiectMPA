@@ -21,14 +21,12 @@ namespace ProiectMPA.Controllers
             _context = context;
         }
 
-        // GET: AdminMenuItems
         public async Task<IActionResult> Index()
         {
             var proiectMPADbContext = _context.MenuItems.Include(m => m.Category);
             return View(await proiectMPADbContext.ToListAsync());
         }
 
-        // GET: AdminMenuItems/Details/5
         [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
@@ -48,16 +46,12 @@ namespace ProiectMPA.Controllers
             return View(menuItem);
         }
 
-        // GET: AdminMenuItems/Create
         public IActionResult Create()
         {
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
             return View();
         }
 
-        // POST: AdminMenuItems/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,ImageURL,Description,Price,CategoryId")] MenuItem menuItem)
@@ -72,7 +66,6 @@ namespace ProiectMPA.Controllers
             return View(menuItem);
         }
 
-        // GET: AdminMenuItems/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -89,9 +82,6 @@ namespace ProiectMPA.Controllers
             return View(menuItem);
         }
 
-        // POST: AdminMenuItems/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,ImageURL,Description,Price,CategoryId")] MenuItem menuItem)
@@ -125,7 +115,6 @@ namespace ProiectMPA.Controllers
             return View(menuItem);
         }
 
-        // GET: AdminMenuItems/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -144,7 +133,6 @@ namespace ProiectMPA.Controllers
             return View(menuItem);
         }
 
-        // POST: AdminMenuItems/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

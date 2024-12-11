@@ -89,7 +89,7 @@ namespace ProiectMPA.Areas.Employee.Controllers
                     {
                         OrderId = existingOrder.Id,
                         Status = status,
-                        Timestamp = DateTime.UtcNow,
+                        Timestamp = DateTime.Now,
                         UserId = user.Id
                     };
 

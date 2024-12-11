@@ -76,7 +76,7 @@ namespace ProiectMPA.Controllers
 
             HttpContext.Session.Remove(CartSessionKey);
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Details", "Orders", new { area = "User", id = order.Id});
         }
 
         public IActionResult AddToCart(int menuItemId, int quantity)

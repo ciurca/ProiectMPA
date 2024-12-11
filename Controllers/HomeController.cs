@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using ProiectMPA.Helpers;
@@ -22,10 +23,46 @@ namespace ProiectMPA.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string searchString, int? categoryId)
         {
-            var proiectMPADbContext = _context.Categories.Include(c => c.MenuItems);
-            return View(await proiectMPADbContext.ToListAsync());
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["PriceSortParm"] = sortOrder == "Price" ? "price_desc" : "Price";
+            ViewData["CurrentFilter"] = searchString;
+            ViewData["CurrentCategory"] = categoryId;
+
+            var menuItems = from m in _context.MenuItems.Include(m => m.Category)
+                            select m;
+
+            if (categoryId.HasValue)
+            {
+                menuItems = menuItems.Where(m => m.CategoryId == categoryId.Value);
+            }
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                menuItems = menuItems.Where(m => m.Name.Contains(searchString) || m.Description.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    menuItems = menuItems.OrderByDescending(m => m.Name);
+                    break;
+                case "Price":
+                    menuItems = menuItems.OrderBy(m => m.Price);
+                    break;
+                case "price_desc":
+                    menuItems = menuItems.OrderByDescending(m => m.Price);
+                    break;
+                default:
+                    menuItems = menuItems.OrderBy(m => m.Name);
+                    break;
+            }
+
+            var categories = await _context.Categories.ToListAsync();
+            ViewData["Categories"] = new SelectList(categories, "Id", "Name");
+
+            return View(await menuItems.ToListAsync());
         }
 
         [Authorize(Roles = "User")]

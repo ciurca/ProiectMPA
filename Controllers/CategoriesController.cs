@@ -21,13 +21,11 @@ namespace ProiectMPA.Controllers
             _context = context;
         }
 
-        // GET: AdminCategories
         public async Task<IActionResult> Index()
         {
             return View(await _context.Categories.ToListAsync());
         }
 
-        // GET: AdminCategories/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -45,15 +43,11 @@ namespace ProiectMPA.Controllers
             return View(category);
         }
 
-        // GET: AdminCategories/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: AdminCategories/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Description")] Category category)
@@ -67,7 +61,6 @@ namespace ProiectMPA.Controllers
             return View(category);
         }
 
-        // GET: AdminCategories/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -83,9 +76,6 @@ namespace ProiectMPA.Controllers
             return View(category);
         }
 
-        // POST: AdminCategories/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description")] Category category)
@@ -118,7 +108,6 @@ namespace ProiectMPA.Controllers
             return View(category);
         }
 
-        // GET: AdminCategories/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -136,7 +125,6 @@ namespace ProiectMPA.Controllers
             return View(category);
         }
 
-        // POST: AdminCategories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

@@ -5,29 +5,52 @@ using ProiectMPA.Models.Data;
 using ProiectMPA.Data;
 using ProiectMPA.Services;
 using ProiectMPA.Hubs;
+
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 builder.Services.AddDbContext<ProiectMPADbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddDbContext<IdentityContext>(options => options.UseSqlServer(connectionString));
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddRoles<IdentityRole>().AddEntityFrameworkStores<IdentityContext>();
+builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+{
+    // Configurare 1. Identity parola
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequiredLength = 8;
+
+    // Configurare 2. Identity Lockout
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10); 
+    options.Lockout.MaxFailedAccessAttempts = 5; 
+    options.Lockout.AllowedForNewUsers = true;
+})
+.AddRoles<IdentityRole>()
+.AddEntityFrameworkStores<IdentityContext>();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserService, UserService>();
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDistributedMemoryCache(); 
+builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
-    options.Cookie.HttpOnly = true;               
-    options.Cookie.IsEssential = true;           
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
 });
 
 builder.Services.AddSignalR();
+
+builder.Services.AddAuthorization(opts =>
+{
+    opts.AddPolicy("OrderManager", policy =>
+    {
+        policy.RequireRole("Employee", "Admin");
+    });
+});
 
 var app = builder.Build();
 
@@ -59,8 +82,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
-
-
 
 app.MapControllerRoute(
     name: "default",

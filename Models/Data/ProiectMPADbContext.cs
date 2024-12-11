@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace ProiectMPA.Models.Data
 {
@@ -17,10 +18,15 @@ namespace ProiectMPA.Models.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<IdentityUser>(entity =>
+            {
+                entity.ToTable("AspNetUsers");
+            });
+
             modelBuilder.Entity<Category>().HasData(
-            new Category { Id = 1, Name = "Appetizers", Description = "Start your meal with a delicious appetizer." },
-            new Category { Id = 2, Name = "Main Courses", Description = "Hearty and satisfying main courses." },
-            new Category { Id = 3, Name = "Desserts", Description = "Sweet treats to end your meal." }
+                new Category { Id = 1, Name = "Appetizers", Description = "Start your meal with a delicious appetizer." },
+                new Category { Id = 2, Name = "Main Courses", Description = "Hearty and satisfying main courses." },
+                new Category { Id = 3, Name = "Desserts", Description = "Sweet treats to end your meal." }
             );
 
             modelBuilder.Entity<MenuItem>().HasData(
@@ -33,10 +39,10 @@ namespace ProiectMPA.Models.Data
             );
 
             modelBuilder.Entity<Order>()
-            .HasOne(o => o.DeliveryAddress) 
-            .WithMany()
-            .HasForeignKey(o => o.DeliveryAddressId) 
-            .OnDelete(DeleteBehavior.NoAction);
+                .HasOne(o => o.DeliveryAddress)
+                .WithMany()
+                .HasForeignKey(o => o.DeliveryAddressId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<OrderStatus>()
                 .HasOne(os => os.User)
@@ -44,7 +50,5 @@ namespace ProiectMPA.Models.Data
                 .HasForeignKey(os => os.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
         }
-
-
     }
 }

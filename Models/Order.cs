@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 using ProiectMPA.Models.Enums;
 
 namespace ProiectMPA.Models
@@ -6,6 +7,7 @@ namespace ProiectMPA.Models
     public class Order
     {
         public int Id { get; set; }
+        [ForeignKey("AspNetUsers")]
         public string UserId { get; set; }
         public IdentityUser? User { get; set; }
         public int DeliveryAddressId {  get; set; }
